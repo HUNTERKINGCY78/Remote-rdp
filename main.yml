@@ -1,0 +1,59 @@
+name: Ollama Phi WebUI with SSH and Public URL
+
+on:
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  ollama-phi:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Run Ubuntu VNC Desktop (docker)
+      run: |
+name: Windows - RustDesk
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Start Building...
+    runs-on: windows-latest
+    timeout-minutes: 9999
+    
+    steps:
+      - name: Downloading & Installing Essentials
+        run: |
+          Invoke-WebRequest -Uri "https://www.dropbox.com/scl/fi/qdyd4p9t6xoabl95n5o3g/Downloads.bat?rlkey=snr74vv1vr8k5suujugvrhjtm&dl=1" -OutFile "Downloads.bat"
+          cmd /c Downloads.bat
+
+      - name: Log In To AnyDesk
+        run: cmd /c show.bat
+
+      - name: Time Counter
+        run: python time.py
+        echo "âœ… Ubuntu VNC Desktop running on port 8086."
+
+    - name: Create SSH key
+      run: |
+        ssh-keygen -t rsa -b 2048 -f /tmp/id_rsa -N ""
+        echo "-----BEGIN PUBLIC KEY-----"
+        cat /tmp/id_rsa.pub
+        echo "-----END PUBLIC KEY-----"
+        echo "Add the above public key to https://localhost.run SSH page (if needed)"
+        echo "Waiting 20 seconds for you to copy public key..."
+        sleep 20
+
+    - name: SSH Tunnel to localhost.run (port 8086)
+      run: |
+        ssh -o StrictHostKeyChecking=no -i /tmp/id_rsa -R 80:localhost:8086 localhost.run &
+        sleep 10
+        echo "âœ… Tunnel started. Public URL should appear above!"
+
+    - name: Keep Action Alive
+      run: |
+        echo "âœ… Setup complete. Keeping container alive for 6h (max GitHub Actions runtime)."
+        sleep 9999999999999999999999999999999999999
